@@ -10,15 +10,17 @@ chrome.runtime.onMessage.addListener(async function (request) {
       MMToken: '',
       MMUserId: '',
       MMAccessToken: '',
+      userStatus: '',
+      userStatusText: ''
     },
-    function ({ MMAuthToken, MMUserId, MMAccessToken }) {
+    function ({ MMAuthToken, MMUserId, MMAccessToken, userStatus, userStatusText }) {
       if (request.state === 'webhookOn') {
         fetch('https://chat.twntydigital.de/api/v4/users/me/status', {
           method: 'PUT',
           headers: {
             Authorization: 'Bearer ' + MMAccessToken,
           },
-          body: JSON.stringify({ user_id: MMUserId, status: 'dnd' }),
+          body: JSON.stringify({ user_id: MMUserId, status: userStatus }),
           credentials: 'omit',
         })
         fetch('https://chat.twntydigital.de/api/v4/users/me/status/custom', {
@@ -26,7 +28,7 @@ chrome.runtime.onMessage.addListener(async function (request) {
           headers: {
             Authorization: 'Bearer ' + MMAccessToken,
           },
-          body: JSON.stringify({ emoji: 'calendar', text: 'On a meeting' }),
+          body: JSON.stringify({ emoji: 'calendar', text: userStatusText }),
           credentials: 'omit',
         })
       }

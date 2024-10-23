@@ -1,4 +1,4 @@
-async function save_options() {
+async function logInHandler() {
   const login = document.getElementById('login-id-input').value
   const password = document.getElementById('password-input').value
 
@@ -46,10 +46,22 @@ async function save_personal_token() {
   })
 }
 
+async function saveOptions() {
+  const status = document.getElementById('statuses').value
+  const text = document.getElementById('status-text').value
+
+  chrome.storage.sync.set({userStatus: status, userStatusText: text})
+}
+
 function onLoad() {
-  chrome.storage.sync.get({MMAuthToken: '', MMAccessToken: ''}, async function (items) {
+  chrome.storage.sync.get({
+    MMAuthToken: '',
+    MMAccessToken: '',
+    userStatus: '',
+    userStatusText: ''
+  }, async function (items) {
     try {
-      const {MMAuthToken, MMAccessToken} = items
+      const {MMAuthToken, MMAccessToken, userStatus, userStatusText} = items
       const token = MMAccessToken ? MMAccessToken : MMAuthToken
 
       const response = await fetch('https://chat.twntydigital.de/api/v4/users/me', {
@@ -71,10 +83,14 @@ function onLoad() {
       const $singInView = document.getElementById('sing-in-view')
       const $homeView = document.getElementById('home-view')
       const $accessToken = document.getElementById('access-token')
+      const $userStatus = document.getElementById('statuses')
+      const $userStatusText = document.getElementById('status-text')
 
       $singInView.style.display = 'none'
       $homeView.style.display = 'block'
       $accessToken.innerText = MMAccessToken
+      $userStatus.value = userStatus
+      $userStatusText.value = userStatusText
 
     } catch (e) {
     }
@@ -92,6 +108,7 @@ function logOutHandler() {
 }
 
 document.addEventListener('DOMContentLoaded', onLoad)
-document.getElementById('login-button').addEventListener('click', save_options)
+document.getElementById('login-button').addEventListener('click', logInHandler)
 document.getElementById('log-out-button').addEventListener('click', logOutHandler)
 document.getElementById('personal-token-button').addEventListener('click', save_personal_token)
+document.getElementById('save-options-button').addEventListener('click', saveOptions)
