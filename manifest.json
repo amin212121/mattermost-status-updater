@@ -1,0 +1,24 @@
+{
+  "update_url": "https://clients2.google.com/service/update2/crx",
+  "manifest_version": 3,
+  "name": "twnty Mattermost status updater",
+  "description": "Detects when the Google meetings starts or ends, and change status in twnty's Mattermost.",
+  "version": "1.0",
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://meet.google.com/*"],
+      "js": ["contentScript.js"]
+    }
+  ],
+  "host_permissions": ["*://*.twntydigital.de/*"],
+  "permissions": ["storage", "scripting"]
+}
