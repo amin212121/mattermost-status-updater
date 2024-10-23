@@ -54,6 +54,10 @@ async function saveOptions() {
 }
 
 function onLoad() {
+  chrome.tabs.query({url: "https://meet.google.com/*"}, function (tabs) {
+    console.log(tabs)
+  });
+
   chrome.storage.sync.get({
     MMAuthToken: '',
     MMAccessToken: '',

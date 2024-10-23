@@ -20,5 +20,5 @@
     }
   ],
   "host_permissions": ["*://*.twntydigital.de/*"],
-  "permissions": ["storage", "scripting"]
+  "permissions": ["storage", "scripting", "tabs"]
 }
