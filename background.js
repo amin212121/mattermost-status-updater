@@ -13,14 +13,14 @@ chrome.runtime.onMessage.addListener(async function (request) {
       userStatus: '',
       userStatusText: ''
     },
-    function ({ MMAuthToken, MMUserId, MMAccessToken, userStatus, userStatusText }) {
+    function ({MMAuthToken, MMUserId, MMAccessToken, userStatus, userStatusText}) {
       if (request.state === 'webhookOn') {
         fetch('https://chat.twntydigital.de/api/v4/users/me/status', {
           method: 'PUT',
           headers: {
             Authorization: 'Bearer ' + MMAccessToken,
           },
-          body: JSON.stringify({ user_id: MMUserId, status: userStatus }),
+          body: JSON.stringify({user_id: MMUserId, status: userStatus}),
           credentials: 'omit',
         })
         fetch('https://chat.twntydigital.de/api/v4/users/me/status/custom', {
@@ -28,17 +28,21 @@ chrome.runtime.onMessage.addListener(async function (request) {
           headers: {
             Authorization: 'Bearer ' + MMAccessToken,
           },
-          body: JSON.stringify({ emoji: 'calendar', text: userStatusText }),
+          body: JSON.stringify({emoji: 'calendar', text: userStatusText}),
           credentials: 'omit',
         })
       }
       if (request.state === 'webhookOff') {
+        chrome.tabs.query({url: "https://meet.google.com/*"}, function (tabs) {
+          console.log(tabs)
+        });
+
         fetch('https://chat.twntydigital.de/api/v4/users/me/status', {
           method: 'PUT',
           headers: {
             Authorization: 'Bearer ' + MMAccessToken,
           },
-          body: JSON.stringify({ user_id: MMUserId, status: 'online' }),
+          body: JSON.stringify({user_id: MMUserId, status: 'online'}),
           credentials: 'omit',
         })
         fetch('https://chat.twntydigital.de/api/v4/users/me/status/custom', {
@@ -46,7 +50,7 @@ chrome.runtime.onMessage.addListener(async function (request) {
           headers: {
             Authorization: 'Bearer ' + MMAccessToken,
           },
-          body: JSON.stringify({ emoji: 'calendar', text: 'On a meeting' }),
+          body: JSON.stringify({emoji: 'calendar', text: 'On a meeting'}),
           credentials: 'omit',
         })
       }
