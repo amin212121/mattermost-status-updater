@@ -3,7 +3,7 @@ const loadHandler = () => {
     try {
       const $loader = document.getElementById('loader')
       const $singInView = document.getElementById('sing-in-view')
-      const {MMAuthToken, MMAccessToken, MMUsername, userStatus, userStatusText} = items
+      const {MMAuthToken, MMAccessToken, MMUsername, userStatus, userStatusText, showMeetingTitle} = items
       const token = MMAccessToken ? MMAccessToken : MMAuthToken
 
       if (!token) {
@@ -37,6 +37,7 @@ const loadHandler = () => {
       const $userStatus = document.getElementById('user-status')
       const $userStatusText = document.getElementById('user-status-text')
       const $userName = document.getElementById('user-name')
+      const $showMeetingTitle = document.getElementById('show-meeting-title')
 
       $loader.style.display = 'none'
       $singInView.style.display = 'none'
@@ -45,6 +46,7 @@ const loadHandler = () => {
       $accessToken.innerText = MMAccessToken
       $userStatus.value = userStatus || "dnd"
       $userStatusText.value = userStatusText || "I'm on a meet"
+      $showMeetingTitle.checked = showMeetingTitle || false
 
     } catch (e) {
     }
@@ -90,9 +92,14 @@ const personalTokenSubmitHandler = async () => {
 const saveOptions = async () => {
   const status = document.getElementById('user-status').value
   const text = document.getElementById('user-status-text').value
+  const showMeetingTitle = document.getElementById('show-meeting-title').checked
   const $button = document.getElementById('save-options-button')
 
-  chrome.storage.sync.set({userStatus: status, userStatusText: text}, () => {
+  chrome.storage.sync.set({
+    userStatus: status,
+    userStatusText: text,
+    showMeetingTitle: showMeetingTitle
+  }, () => {
     $button.innerText = 'Saved'
 
     setTimeout(() => ($button.textContent = 'Save'), 750)
