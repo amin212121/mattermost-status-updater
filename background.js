@@ -1,3 +1,5 @@
+import {getMeetingTitle, isMeetingCodeInMeetingTitle} from "./scripts/helpers.js";
+
 chrome.runtime.onInstalled.addListener(function (object) {
   chrome.tabs.create({
     url: chrome.runtime.getURL('options.html'),
@@ -11,9 +13,10 @@ chrome.runtime.onMessage.addListener(async function (request) {
       MMUserId: '',
       MMAccessToken: '',
       userStatus: '',
-      userStatusText: ''
+      userStatusText: '',
+      showMeetingTitle: false
     },
-    function ({MMAuthToken, MMUserId, MMAccessToken, userStatus, userStatusText}) {
+    function ({MMAuthToken, MMUserId, MMAccessToken, userStatus, userStatusText, showMeetingTitle}) {
       if (request.state === 'webhookOn') {
         fetch('https://chat.twntydigital.de/api/v4/users/me/status', {
           method: 'PUT',
@@ -23,6 +26,7 @@ chrome.runtime.onMessage.addListener(async function (request) {
           body: JSON.stringify({user_id: MMUserId, status: userStatus}),
           credentials: 'omit',
         })
+
         fetch('https://chat.twntydigital.de/api/v4/users/me/status/custom', {
           method: 'PUT',
           headers: {
@@ -31,6 +35,35 @@ chrome.runtime.onMessage.addListener(async function (request) {
           body: JSON.stringify({emoji: 'calendar', text: userStatusText}),
           credentials: 'omit',
         })
+
+        if (showMeetingTitle) {
+          chrome.tabs.onUpdated.addListener(function titleUpdateListener(tabId, changeInfo){
+            if (!changeInfo.title) {
+              return
+            }
+
+            const meetingTitle = getMeetingTitle(changeInfo.title)
+
+            if (!meetingTitle) {
+              return
+            }
+
+            if (isMeetingCodeInMeetingTitle(meetingTitle)) {
+              return
+            }
+
+            fetch('https://chat.twntydigital.de/api/v4/users/me/status/custom', {
+              method: 'PUT',
+              headers: {
+                Authorization: 'Bearer ' + MMAccessToken,
+              },
+              body: JSON.stringify({emoji: 'calendar', text: `${userStatusText} (${meetingTitle})`}),
+              credentials: 'omit',
+            })
+
+            chrome.tabs.onUpdated.removeListener(titleUpdateListener)
+          })
+        }
       }
       if (request.state === 'webhookOff') {
         chrome.tabs.query({url: "https://meet.google.com/*"}, function (tabs) {
