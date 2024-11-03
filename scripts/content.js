@@ -1,9 +1,9 @@
 chrome.runtime.sendMessage({
-  state: 'webhookOn',
+  state: 'googleMeetStarted',
 })
 
 window.addEventListener('beforeunload', function (e) {
   chrome.runtime.sendMessage({
-    state: 'webhookOff',
+    state: 'googleMeetFinished',
   })
 })
