@@ -1,5 +1,5 @@
 export const getMeetingTitle = (pageTitle) => {
-    const meetingTitleRegExp = /(?<=Meet([\u00A0\u0020])– ).*/
+    const meetingTitleRegExp = /(?<=Meet(\u00A0|\s)– ).*/
     const meetingTitleMatch = pageTitle.match(meetingTitleRegExp)
 
     if (!meetingTitleMatch) {
