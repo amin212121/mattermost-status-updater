@@ -1,56 +1,9 @@
+import {authenticateUser, getUserOptions, setDefaultUserOptions} from "./helpers.js";
+
 const loadHandler = () => {
-  chrome.storage.sync.get(null, async function (items) {
-    try {
-      const $loader = document.getElementById('loader')
-      const $singInView = document.getElementById('sing-in-view')
-      const {MMAuthToken, MMAccessToken, MMUsername, userStatus, userStatusText, showMeetingTitle} = items
-      const token = MMAccessToken ? MMAccessToken : MMAuthToken
-
-      if (!token) {
-        $singInView.style.display = 'block'
-        $loader.style.display = 'none'
-
-        return
-      }
-
-      const response = await fetch('https://chat.twntydigital.de/api/v4/users/me', {
-        method: 'GET',
-        headers: {
-          'Content-type': 'application/json',
-          Authorization: 'Bearer ' + token,
-        },
-        credentials: 'omit',
-      })
-
-      if (!response.ok) {
-        $singInView.style.display = 'block'
-        $loader.style.display = 'none'
-
-        return
-      }
-
-      const responseData = await response.json()
-      chrome.storage.sync.set({MMUserId: responseData.id})
-
-      const $homeView = document.getElementById('home-view')
-      const $accessToken = document.getElementById('access-token')
-      const $userStatus = document.getElementById('user-status')
-      const $userStatusText = document.getElementById('user-status-text')
-      const $userName = document.getElementById('user-name')
-      const $showMeetingTitle = document.getElementById('show-meeting-title')
-
-      $loader.style.display = 'none'
-      $singInView.style.display = 'none'
-      $homeView.style.display = 'block'
-      $userName.innerText = MMUsername || responseData.username
-      $accessToken.innerText = MMAccessToken
-      $userStatus.value = userStatus || "dnd"
-      $userStatusText.value = userStatusText || "I'm on a meet"
-      $showMeetingTitle.checked = showMeetingTitle || false
-
-    } catch (e) {
-    }
-  })
+  authenticateUser()
+  setDefaultUserOptions()
+  getUserOptions()
 }
 
 const logInHandler = async () => {
