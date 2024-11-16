@@ -1,0 +1,41 @@
+# OS-specific files
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# Node.js related (if applicable)
+node_modules/
+npm-debug.log*
+
+# JetBrains IDEs (IntelliJ IDEA, WebStorm, etc.)
+.idea/
+*.iml
+*.iws
+out/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Environment variables and secrets
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
